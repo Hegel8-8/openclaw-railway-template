@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# Apagar el bloqueo de emparejamiento (Confiar en los proxies de Railway)
+node -e "const fs=require('fs'); const p='/data/.openclaw/openclaw.json'; try { if(fs.existsSync(p)){ const d=JSON.parse(fs.readFileSync(p)); d.gateway=d.gateway||{}; d.gateway.trustedProxies=['0.0.0.0/0', '::/0']; d.gateway.controlUi=d.gateway.controlUi||{}; d.gateway.controlUi.allowInsecureAuth=true; fs.writeFileSync(p, JSON.stringify(d,null,2)); } } catch(e){}"
+
 # Fix volume permissions
 chown -R openclaw:openclaw /data 2>/dev/null || true
 chmod -R 755 /data 2>/dev/null || true

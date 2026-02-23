@@ -7,10 +7,6 @@ node -e "const fs=require('fs'); const p='/data/.openclaw/openclaw.json'; try { 
 # Fix volume permissions
 chown -R openclaw:openclaw /data 2>/dev/null || true
 chmod -R 755 /data 2>/dev/null || true
-# Ensure /data is owned by openclaw user and has restricted permissions
-chown -R openclaw:openclaw /data 2>/dev/null || true
-chmod -R 755 /data 2>/dev/null || true
-gosu openclaw node /openclaw/dist/entry.js doctor --fix || true
 
 # Persist Homebrew to Railway volume so it survives container rebuilds
 BREW_VOLUME="/data/.linuxbrew"

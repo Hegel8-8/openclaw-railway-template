@@ -1,6 +1,12 @@
 #!/bin/bash
 set -e
 
+# Cirugia para reparar el JSON corrupto
+node -e "const fs=require('fs'); const p='/data/.openclaw/openclaw.json'; try { if(fs.existsSync(p)){ const d=JSON.parse(fs.readFileSync(p)); if(d.gateway && d.gateway.auth){ d.gateway.auth.mode='token'; fs.writeFileSync(p, JSON.stringify(d,null,2)); } } } catch(e){}"
+
+# Fix volume permissions
+chown -R openclaw:openclaw /data 2>/dev/null || true
+chmod -R 755 /data 2>/dev/null || true
 # Ensure /data is owned by openclaw user and has restricted permissions
 chown -R openclaw:openclaw /data 2>/dev/null || true
 chmod -R 755 /data 2>/dev/null || true

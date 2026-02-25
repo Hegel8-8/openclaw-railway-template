@@ -29,3 +29,17 @@ else
 fi
 
 exec gosu openclaw node src/server.js
+
+# Auto-configure gateway to disable device auth
+node -e "
+const fs = require('fs');
+const path = '/data/.openclaw/openclaw.json';
+try {
+  const config = JSON.parse(fs.readFileSync(path, 'utf8'));
+  if (!config.gateway) config.gateway = {};
+  if (!config.gateway.controlUi) config.gateway.controlUi = {};
+  config.gateway.controlUi.dangerouslyDisableDeviceAuth = true;
+  fs.writeFileSync(path, JSON.stringify(config, null, 2));
+  console.log('[entrypoint] Gateway device auth disabled');
+} catch(e) { console.log('[entrypoint] Config patch skipped:', e.message); }
+"

@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-# Auto-configure gateway, model and Steel browser profile
+# Auto-configure gateway and Steel browser profile
 node -e "
 const fs = require('fs');
 const path = '/data/.openclaw/openclaw.json';
@@ -13,13 +13,6 @@ try {
   if (!config.gateway.controlUi) config.gateway.controlUi = {};
   config.gateway.controlUi.dangerouslyDisableDeviceAuth = true;
   config.gateway.controlUi.allowedOrigins = ['https://openclaw-main-production-cb6d.up.railway.app'];
-
-  // Model config - Gemini primary, Claude fallback
-  if (!config.agents) config.agents = {};
-  if (!config.agents.defaults) config.agents.defaults = {};
-  if (!config.agents.defaults.model) config.agents.defaults.model = {};
-  config.agents.defaults.model.primary = 'google/gemini-3-pro-preview';
-  config.agents.defaults.model.fallback = 'anthropic/claude-sonnet-4-6';
 
   // Steel browser profile
   const steelKey = process.env.STEEL_API_KEY;
@@ -36,7 +29,7 @@ try {
   }
 
   fs.writeFileSync(path, JSON.stringify(config, null, 2));
-  console.log('[entrypoint] Config patched: Gemini primary, Claude fallback');
+  console.log('[entrypoint] Gateway config patched');
 } catch(e) { console.log('[entrypoint] Config patch skipped:', e.message); }
 "
 

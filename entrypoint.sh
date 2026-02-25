@@ -1,17 +1,35 @@
 #!/bin/bash
 set -e
 
-# Auto-configure gateway to disable device auth
+# Auto-configure gateway and Steel browser profile
 node -e "
 const fs = require('fs');
 const path = '/data/.openclaw/openclaw.json';
 try {
   const config = JSON.parse(fs.readFileSync(path, 'utf8'));
+
+  // Gateway config
   if (!config.gateway) config.gateway = {};
   if (!config.gateway.controlUi) config.gateway.controlUi = {};
   config.gateway.controlUi.dangerouslyDisableDeviceAuth = true;
+  config.gateway.controlUi.allowedOrigins = ['https://openclaw-main-production-cb6d.up.railway.app'];
+
+  // Steel browser profile
+  const steelKey = process.env.STEEL_API_KEY;
+  if (steelKey) {
+    if (!config.browser) config.browser = {};
+    if (!config.browser.profiles) config.browser.profiles = {};
+    config.browser.profiles.steel = {
+      cdpUrl: 'https://connect.steel.dev?apiKey=' + steelKey,
+      color: '#336699'
+    };
+    console.log('[entrypoint] Steel browser profile configured');
+  } else {
+    console.log('[entrypoint] STEEL_API_KEY not found, skipping Steel profile');
+  }
+
   fs.writeFileSync(path, JSON.stringify(config, null, 2));
-  console.log('[entrypoint] Gateway device auth disabled');
+  console.log('[entrypoint] Gateway config patched');
 } catch(e) { console.log('[entrypoint] Config patch skipped:', e.message); }
 "
 

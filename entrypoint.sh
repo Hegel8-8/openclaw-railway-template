@@ -12,7 +12,7 @@ try {
   c.gateway.controlUi.allowedOrigins = ['https://openclaw-main-production-cb6d.up.railway.app'];
   if (!c.agents) c.agents = {};
   if (!c.agents.defaults) c.agents.defaults = {};
-  c.agents.defaults.model = 'google/gemini-3-pro-preview';
+  c.agents.defaults.model = 'anthropic/claude-sonnet-4-6';
   const k = process.env.STEEL_API_KEY;
   if (k) {
     if (!c.browser) c.browser = {};
